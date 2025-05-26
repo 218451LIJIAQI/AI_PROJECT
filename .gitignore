@@ -1,0 +1,12 @@
+# Node / React
+moody-music/node_modules/
+moody-music/.env
+
+# Django / Python
+music_backend/venv/
+music_backend/.env
+**/__pycache__/
+**/*.pyc
+
+# IDE
+.idea/
