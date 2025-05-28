@@ -8,3 +8,9 @@ __pycache__/
 *.pyd
 *.so
 *.exe
+
+# Node.js 文件
+node_modules/
+.cache/
+dist/
+build/
