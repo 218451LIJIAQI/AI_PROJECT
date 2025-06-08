@@ -13,14 +13,20 @@ Django settings for music_backend project (💯 满分安全优化版)
 import os
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
-import dj_database_url       # pip install dj-database-url
-import dotenv                # pip install python-dotenv
+
+try:
+    import dj_database_url       # pip install dj-database-url
+    import dotenv                # pip install python-dotenv
+except ImportError:
+    dj_database_url = None
+    dotenv = None
 
 # 项目根路径，manage.py 同级目录
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 从 BASE_DIR/.env 加载环境变量
-dotenv.load_dotenv(BASE_DIR / '.env')
+if dotenv:
+    dotenv.load_dotenv(BASE_DIR / '.env')
 
 # ---------------------------------------------------------------------------
 # 🔐 Secret Key
@@ -46,8 +52,9 @@ INSTALLED_APPS = [
      # Third-party
      "corsheaders",
      "rest_framework",
+     "rest_framework.authtoken",
     # Local apps
-    "yourapp",
+# 'yourapp',
     # Local apps
     "music",          # ← 注册你的 music 应用
 ]
@@ -90,23 +97,34 @@ TEMPLATES = [
 WSGI_APPLICATION = "music_backend.wsgi.application"
 
 # ---------------------------------------------------------------------------
-# 🗄️ Database (PostgreSQL by default)
+# 🗄️ Database (支持 PostgreSQL 或者 SQLite 开发)
 # ---------------------------------------------------------------------------
+
 DEFAULT_DB = {
-    "ENGINE": "django.db.backends.postgresql",
-    "NAME": os.getenv("POSTGRES_DB", "moodify_db"),
-    "USER": os.getenv("POSTGRES_USER", "postgres"),
-    "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),
-    "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-    "PORT": os.getenv("POSTGRES_PORT", "5432"),
+    "ENGINE": "django.db.backends.sqlite3",
+    "NAME": BASE_DIR / "db.sqlite3",
 }
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL", None),
-        conn_max_age=600
-    ) or DEFAULT_DB
-}
+# Check for DATABASE_URL environment variable
+database_url = os.getenv("DATABASE_URL", None)
+
+if database_url and dj_database_url:
+    # Use PostgreSQL from environment
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=database_url,
+            conn_max_age=600
+        )
+    }
+else:
+    # Use SQLite for development
+    DATABASES = {
+        "default": DEFAULT_DB
+    }
+    if not database_url:
+        print("Using SQLite database for development")
+    else:
+        print("dj_database_url not available, falling back to SQLite")
 
 # ---------------------------------------------------------------------------
 # 🔑 Password Validators
@@ -142,5 +160,47 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ---------------------------------------------------------------------------
 CORS_ALLOWED_ORIGINS = os.getenv(
     "CORS_ALLOWED_ORIGINS",
-    "http://localhost:3000"
+    "http://localhost:3000,http://127.0.0.1:3000"
 ).split(",")
+
+# Additional CORS settings for development
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = os.getenv("DJANGO_DEBUG", "True") == "True"  # Only in development
+
+# CORS headers
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# ---------------------------------------------------------------------------
+# 🔐 Django REST Framework Configuration
+# ---------------------------------------------------------------------------
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Allow unauthenticated access by default
+    ],
+}
+
+# ---------------------------------------------------------------------------
+# 🔑 Authentication Configuration
+# ---------------------------------------------------------------------------
+LOGIN_URL = '/api/auth/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Session settings for authentication
+SESSION_COOKIE_AGE = 86400  # 24 hours
+SESSION_COOKIE_HTTPONLY = True
+SESSION_SAVE_EVERY_REQUEST = True

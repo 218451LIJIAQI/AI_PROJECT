@@ -1,6 +1,6 @@
 // src/components/SongSuggestions.js
 import React from 'react';
-import { Row, Col, Card, Button, Alert, Spinner } from 'react-bootstrap';
+import { Row, Col, Alert, Container } from 'react-bootstrap';
 
 /**
  * SongSuggestions Component
@@ -10,13 +10,23 @@ import { Row, Col, Card, Button, Alert, Spinner } from 'react-bootstrap';
  *   Each song object should have: id, title, artist, albumImageUrl, url.
  */
 
-const SongSuggestions = ({ songs }) => {
+const SongSuggestions = ({ songs, mood }) => {
   // Loading state
   if (songs === null) {
     return (
-      <div className="d-flex flex-column align-items-center my-5">
-        <Spinner animation="border" role="status" />
-        <p className="mt-3 text-muted">Loading your vibe...</p>
+      <div className="desktop-loading-container fade-in">
+        <div className="loading-grid">
+          <div className="loading-content">
+            <div className="loading-spinner-large"></div>
+            <h3 className="loading-title">🎵 Curating Your Perfect Playlist</h3>
+            <p className="loading-subtitle">
+              AI is analyzing millions of tracks to find songs that perfectly match your vibe...
+            </p>
+            <div className="loading-progress">
+              <div className="progress-bar"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -24,54 +34,134 @@ const SongSuggestions = ({ songs }) => {
   // Empty state
   if (!Array.isArray(songs) || songs.length === 0) {
     return (
-      <Alert variant="warning" className="text-center my-5">
-        Oops! No songs found for this mood.
-      </Alert>
+      <div className="desktop-empty-state fade-in">
+        <Container>
+          <Row className="justify-content-center">
+            <Col lg={6} className="text-center">
+              <div className="empty-state-content">
+                <div className="empty-icon">🎭</div>
+                <h3 className="empty-title">No Vibes Found</h3>
+                <p className="empty-description">
+                  We couldn't find songs matching this mood. This might be because:
+                </p>
+                <ul className="empty-suggestions">
+                  <li>The mood is too specific or uncommon</li>
+                  <li>The AI couldn't parse your text description</li>
+                  <li>There's a temporary issue with the music database</li>
+                </ul>
+                <p className="empty-hint">
+                  💡 Try a different mood or use the genre selector for better results!
+                </p>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
     );
   }
 
-  // Display songs in a responsive grid
+  // Display songs in a responsive desktop grid
   return (
-    <Row xs={1} sm={2} md={3} lg={4} className="g-4 mt-4">
-      {songs.map((song) => (
-        <Col key={song.id} className="d-flex">
-          <Card className="flex-fill shadow-lg rounded-4 transition-transform hover-pop">
-            {song.albumImageUrl && (
-              <Card.Img
-                variant="top"
-                src={song.albumImageUrl}
-                alt={`${song.title} album cover`}
-                style={{
-                  height: '180px',
-                  objectFit: 'cover',
-                  borderTopLeftRadius: '0.75rem',
-                  borderTopRightRadius: '0.75rem'
-                }}
-              />
-            )}
-            <Card.Body className="d-flex flex-column">
-              <Card.Title className="mb-2 text-truncate" title={song.title}>
-                {song.title}
-              </Card.Title>
-              <Card.Text className="text-muted text-truncate mb-3" title={song.artist}>
-                {song.artist}
-              </Card.Text>
-              <div className="mt-auto">
-                <Button
-                  variant="success"
-                  href={song.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-100 fw-semibold"
+    <div className="desktop-song-suggestions fade-in">
+      <Container fluid>
+        {/* Results Header */}
+        <div className="results-header">
+          <Row className="justify-content-center">
+            <Col lg={8} className="text-center">
+              <h2 className="results-title">
+                🎶 Your {mood ? `${mood.charAt(0).toUpperCase() + mood.slice(1)}` : 'Personalized'} Playlist
+              </h2>
+              <p className="results-subtitle">
+                {songs.length} curated songs matching your energy • Perfect for any moment ✨
+              </p>
+              <div className="results-divider" />
+            </Col>
+          </Row>
+        </div>
+
+        {/* Song Grid */}
+        <div className="desktop-song-grid">
+          <Row xs={1} sm={2} lg={3} xl={4} xxl={5} className="g-4">
+            {songs.map((song, index) => (
+              <Col key={song.id} className="d-flex">
+                <div 
+                  className="desktop-song-card slide-in"
+                  style={{ 
+                    animationDelay: `${index * 0.08}s`,
+                    animationFillMode: 'both'
+                  }}
                 >
-                  Listen on Spotify
-                </Button>
+                  {/* Album Cover */}
+                  <div className="desktop-album-cover">
+                    {song.albumImageUrl && (
+                      <>
+                        <img
+                          src={song.albumImageUrl}
+                          alt={`${song.title} album cover`}
+                          className="album-image"
+                        />
+                        <div className="album-overlay">
+                          <div className="play-button">
+                            <span>🎵</span>
+                          </div>
+                        </div>
+                        <div className="track-number">
+                          #{index + 1}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  
+                  {/* Song Info */}
+                  <div className="desktop-song-info">
+                    <h4 className="song-title" title={song.title}>
+                      {song.title}
+                    </h4>
+                    
+                    <p className="song-artist" title={song.artist}>
+                      <span className="artist-icon">🎤</span>
+                      {song.artist}
+                    </p>
+                    
+                    {/* Action Button */}
+                    <a
+                      href={song.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="desktop-play-btn"
+                    >
+                      <span className="btn-icon">🎧</span>
+                      <span className="btn-text">Listen on Spotify</span>
+                      <div className="btn-shine"></div>
+                    </a>
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </div>
+
+        {/* Playlist Actions */}
+        <div className="playlist-actions">
+          <Row className="justify-content-center">
+            <Col lg={6} className="text-center">
+              <div className="action-buttons">
+                <button className="action-btn secondary">
+                  📋 Export Playlist
+                </button>
+                <button className="action-btn primary">
+                  🔄 Find More Songs
+                </button>
               </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      ))}
-    </Row>
+              <p className="playlist-stats">
+                Total Duration: ~{Math.round(songs.length * 3.5)} minutes • 
+                {songs.length} tracks discovered
+              </p>
+            </Col>
+          </Row>
+        </div>
+      </Container>
+    </div>
   );
 };
 
