@@ -8,6 +8,9 @@ music_backend/.env
 **/__pycache__/
 **/*.pyc
 
+# Virtual Environment
+venv310/
+
 # IDE
 .idea/
 node_modules
