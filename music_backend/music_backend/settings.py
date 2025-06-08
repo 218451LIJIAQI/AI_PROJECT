@@ -47,7 +47,7 @@ INSTALLED_APPS = [
      "corsheaders",
      "rest_framework",
     # Local apps
-    "yourapp",
+# 'yourapp',
     # Local apps
     "music",          # ← 注册你的 music 应用
 ]

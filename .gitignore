@@ -10,3 +10,4 @@ music_backend/.env
 
 # IDE
 .idea/
+node_modules
