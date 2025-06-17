@@ -1,0 +1,43 @@
+{
+  "name": "moodify-workspace",
+  "version": "1.0.0",
+  "description": "Moodify - AI-powered music recommendation system workspace configuration",
+  "private": true,
+  "workspaces": [
+    "moody-music"
+  ],
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "install:all": "npm install && cd moody-music && npm install",
+    "dev:frontend": "cd moody-music && npm start",
+    "build:frontend": "cd moody-music && npm run build",
+    "test:frontend": "cd moody-music && npm test",
+    "lint": "cd moody-music && npm run lint"
+  },
+  "keywords": [
+    "ai",
+    "music",
+    "emotion-detection",
+    "recommendation-system",
+    "react",
+    "django",
+    "spotify-api",
+    "machine-learning"
+  ],
+  "author": "Moodify Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/moodify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/moodify/issues"
+  },
+  "homepage": "https://github.com/yourusername/moodify#readme",
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  }
+}

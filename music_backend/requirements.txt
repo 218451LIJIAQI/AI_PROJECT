@@ -1,0 +1,53 @@
+# Moodify Backend Dependencies
+# Python package requirements for the Django REST API backend
+# Install with: pip install -r requirements.txt
+
+# ========================================
+# CORE DJANGO FRAMEWORK
+# ========================================
+Django>=4.2.0,<5.0  # Web framework for rapid development
+djangorestframework>=3.14.0  # REST API framework for Django
+
+# ========================================
+# DATABASE & ORM
+# ========================================
+psycopg2-binary>=2.9.0  # PostgreSQL adapter for Python
+dj-database-url>=2.0.0  # Database URL parsing utility
+
+# ========================================
+# AI & MACHINE LEARNING
+# ========================================
+tensorflow>=2.13.0  # Deep learning framework for emotion detection
+scikit-learn>=1.3.0  # Machine learning library for data processing
+numpy>=1.24.0  # Numerical computing library
+opencv-python>=4.8.0  # Computer vision library for image processing
+
+# ========================================
+# NATURAL LANGUAGE PROCESSING
+# ========================================
+textblob>=0.17.1  # Natural language processing for sentiment analysis
+
+# ========================================
+# WEB & API INTEGRATION
+# ========================================
+requests>=2.31.0  # HTTP library for API calls
+django-cors-headers>=4.2.0  # Cross-Origin Resource Sharing support
+
+# ========================================
+# CONFIGURATION & ENVIRONMENT
+# ========================================
+django-environ>=0.10.0  # Environment variable management
+python-dotenv>=1.0.0  # Load environment variables from .env files
+
+# ========================================
+# IMAGE PROCESSING
+# ========================================
+Pillow>=10.0.0  # Python Imaging Library for image manipulation
+
+# ========================================
+# DEVELOPMENT & TESTING (Optional)
+# ========================================
+# pytest>=7.4.0  # Testing framework
+# pytest-django>=4.5.0  # Django integration for pytest
+# black>=23.0.0  # Code formatter
+# flake8>=6.0.0  # Code linter
